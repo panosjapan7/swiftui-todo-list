@@ -3,8 +3,12 @@
 import SwiftUI
 
 struct AddView: View {
-    
+    @Environment(\.presentationMode) var presentationMode
+    @EnvironmentObject var listViewModel: ListViewModel
     @State var textFieldText: String =  ""
+    
+    @State var alertTitle: String = ""
+    @State var showAlert: Bool = false
     
     var body: some View {
         ScrollView {
@@ -15,9 +19,9 @@ struct AddView: View {
                     .background(Color(#colorLiteral(red: 0.8374180198, green: 0.8374378085, blue: 0.8374271393, alpha: 1)))
                     .cornerRadius(10)
                 
-                Button {
-                    
-                } label: {
+                Button(
+                    action: saveButtonPressed,
+                    label: {
                     Text("Save".uppercased())
                         .foregroundColor(.white)
                         .font(.headline)
@@ -25,13 +29,38 @@ struct AddView: View {
                         .frame(maxWidth: .infinity)
                         .background(Color.accentColor)
                         .cornerRadius(10)
-                }
+                })
 
             }
             .padding(14)
             
         }
         .navigationTitle("Add an item 🖊️")
+        .alert(isPresented: $showAlert, content: getAlert)
+    }
+    
+    func saveButtonPressed() {
+        
+        if textIsAppropriate() {
+            listViewModel.addItem(title: textFieldText)
+            // tells the presentationMode to go back 1 View in the View hierarchy
+            presentationMode.wrappedValue.dismiss()
+        }
+        
+        
+    }
+    
+    func textIsAppropriate() -> Bool {
+        if textFieldText.count < 3 {
+            alertTitle = "Your new todo item must be at least 3 characters long!"
+            showAlert.toggle()
+            return false
+        }
+        return true
+    }
+    
+    func getAlert() -> Alert {
+        return Alert(title: Text(alertTitle))
     }
 }
 
@@ -40,6 +69,6 @@ struct AddView_Previews: PreviewProvider {
         NavigationView{
             AddView()
         }
-        
+        .environmentObject(ListViewModel())
     }
 }
