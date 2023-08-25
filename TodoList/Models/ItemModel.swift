@@ -3,7 +3,7 @@
 import Foundation
 
 // Immutable struct (all vars are let vars)
-struct ItemModel: Identifiable {
+struct ItemModel: Identifiable, Codable {
     let id: String
     let title: String
     let isCompleted: Bool
