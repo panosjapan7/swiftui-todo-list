@@ -35,6 +35,8 @@ struct NoItemsView: View {
                 .offset(y: animate ? -7 : 0)
                 
             }
+            // limits how much it will be on landscape
+            .frame(maxWidth: 400)
             .multilineTextAlignment(.center)
             .padding(40)
             .onAppear(perform: addAnimation)
